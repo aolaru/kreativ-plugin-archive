@@ -7,8 +7,10 @@ const libre = Libre_Baskerville({ variable: '--font-libre', subsets: ['latin'], 
 const mono = DM_Mono({ variable: '--font-mono', subsets: ['latin'], weight: ['400', '500'] });
 
 export const metadata: Metadata = {
-  title: 'Pluginpedia — Audio software archive',
+  title: 'audioplugin.io — Audio Plugin Archive',
   description: 'A community-maintained historical archive of audio plugins, virtual instruments, effects, and music software.',
+  applicationName: 'audioplugin.io',
+  icons: { icon: '/favicon.svg' },
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
