@@ -1,21 +1,371 @@
-import { ArrowLeft, ArrowRight, Check, ExternalLink, Flag, Heart, MessageCircle, Music2, Pencil, Share2, ThumbsUp } from 'lucide-react';
+import {
+  ArrowLeft,
+  ArrowRight,
+  Check,
+  ExternalLink,
+  Flag,
+  Heart,
+  MessageCircle,
+  Music2,
+  Pencil,
+  Share2,
+  ThumbsUp,
+} from 'lucide-react';
 import { getProduct } from '@/lib/archive';
 
 export const dynamic = 'force-dynamic';
 
-export default async function ProductPage({ params }: { params: { 'developer-slug': string; 'product-slug': string } }) {
-  const record = await getProduct(params['developer-slug'], params['product-slug']);
-  if (!record) return <main className="browse-page"><header className="record-header"><a className="wordmark" href="/"><span className="mark">A</span><span>audioplugin.io</span><small>archive</small></a></header><section className="browse-hero"><p className="eyebrow">Archive record</p><h1>Entry not found</h1><p>This product has not been added to the archive yet.</p><a className="entry-link" href="/">Return to the archive <ArrowRight size={15}/></a></section></main>;
+export default async function ProductPage({
+  params,
+}: {
+  params: { 'developer-slug': string; 'product-slug': string };
+}) {
+  const record = await getProduct(
+    params['developer-slug'],
+    params['product-slug'],
+  );
+  if (!record)
+    return (
+      <main className="browse-page">
+        <header className="record-header">
+          <a className="wordmark" href="/">
+            <span className="mark">A</span>
+            <span>audioplugin.io</span>
+            <small>archive</small>
+          </a>
+        </header>
+        <section className="browse-hero">
+          <p className="eyebrow">Archive record</p>
+          <h1>Entry not found</h1>
+          <p>This product has not been added to the archive yet.</p>
+          <a className="entry-link" href="/">
+            Return to the archive <ArrowRight size={15} />
+          </a>
+        </section>
+      </main>
+    );
   const developer = record.developers;
-  const versions = [...(record.product_versions ?? [])].sort((a, b) => (b.release_date ?? '').localeCompare(a.release_date ?? ''));
-  const categories = record.product_categories?.map((item) => item.categories?.name).filter(Boolean).join(' · ') || 'Uncategorized';
-  const formats = record.product_formats?.map((item) => item.formats?.code).filter(Boolean).join(' · ') || 'Not documented';
+  const versions = [...(record.product_versions ?? [])].sort((a, b) =>
+    (b.release_date ?? '').localeCompare(a.release_date ?? ''),
+  );
+  const categories =
+    record.product_categories
+      ?.map((item) => item.categories?.name)
+      .filter(Boolean)
+      .join(' · ') || 'Uncategorized';
+  const formats =
+    record.product_formats
+      ?.map((item) => item.formats?.code)
+      .filter(Boolean)
+      .join(' · ') || 'Not documented';
+  const sources = (record.product_sources ?? [])
+    .flatMap((item) => (item.sources ? [item.sources] : []))
+    .sort((a, b) =>
+      (b.publication_date ?? '').localeCompare(a.publication_date ?? ''),
+    );
   const archived = record.status === 'discontinued';
-  return <main className="record-page"><header className="record-header"><a className="wordmark" href="/"><span className="mark">A</span><span>audioplugin.io</span><small>archive</small></a><nav><a href="/">Archive</a><a href={`/developer/${developer?.slug}`}>Developers</a><a href="/status/discontinued">Discontinued</a></nav><a className="record-contribute" href="#suggest"><Pencil size={14} /> Suggest an edit</a></header>
-    <div className="record-breadcrumb"><a href="/">Archive</a><ArrowRight size={13}/><a href={`/developer/${developer?.slug}`}>{developer?.name}</a><ArrowRight size={13}/><span>{record.name}</span></div>
-    <section className="record-hero"><div className="record-visual"><div className="plugin-panel"><span className="ni-mark">{developer?.name.split(' ').map((part) => part[0]).join('')}</span><span className="plugin-name">{record.name}</span><div className="plugin-lcd">ARCHIVE&nbsp;&nbsp; {record.product_type ?? 'Audio software'}</div><div className="knob-row">{Array.from({length: 8}).map((_, i) => <i key={i}/>)}</div><div className="slider-row">{Array.from({length: 6}).map((_, i) => <i key={i}/>)}</div><small>{developer?.name} · archive record</small></div><p>Screenshot not yet sourced · <a href="#suggest">contribute one</a></p></div><div className="record-title"><div className="entry-kicker"><span className={`status ${archived ? 'discontinued' : ''}`}>{archived ? 'Discontinued' : 'Active'}</span><span>{record.initial_release_year ?? 'Year unknown'}{record.discontinued_year ? `–${record.discontinued_year}` : ''}</span></div><h1>{record.name}</h1><p className="developer-line">by <a href={`/developer/${developer?.slug}`}>{developer?.name}</a></p><p className="record-lede">{record.short_description ?? 'A documented audio software product in the audioplugin.io archive.'}</p><div className="signal-row"><button><ThumbsUp size={16}/> I used this <b>0</b></button><button><Check size={16}/> I still use this <b>0</b></button><button><Heart size={16}/> Love it <b>0</b></button></div><div className="record-actions"><button><Share2 size={15}/> Share</button><a href="#sources"><Flag size={15}/> Sources</a></div></div></section>
-    <nav className="record-tabs" aria-label="Entry sections"><a href="#overview">Overview</a><a href="#versions">Versions</a><a href="#specifications">Specifications</a><a href="#audio">Audio</a><a href="#compatibility">Compatibility</a><a href="#comments">Comments</a><a href="#sources">Sources</a></nav>
-    <div className="record-body"><article><section id="overview" className="record-section"><div className="section-label">01 / Overview</div><div><h2>Overview</h2><p>{record.overview ?? record.short_description ?? 'No overview has been added yet.'}</p></div></section><section id="versions" className="record-section"><div className="section-label">02 / Release history</div><div><h2>Versions <span>{versions.length} documented</span></h2>{versions.length ? <div className="version-table">{versions.map((version) => <div className="version-row" key={version.id}><b>{version.version_number}</b><time>{version.release_date?.slice(0, 4) ?? 'Undated'}</time><p>{version.notes ?? 'No release notes documented.'}</p><small>{version.release_status}</small></div>)}</div> : <div className="empty-state"><Check size={22}/><div><b>No versions have been added yet.</b><p>Help improve this entry with a release number or date.</p></div></div>}</div></section><section id="specifications" className="record-section"><div className="section-label">03 / Technical record</div><div><h2>Specifications</h2><dl className="spec-list"><div><dt>Product type</dt><dd>{record.product_type ?? 'Not documented'}</dd></div><div><dt>Categories</dt><dd>{categories}</dd></div><div><dt>Formats</dt><dd>{formats}</dd></div><div><dt>Initial release</dt><dd>{record.initial_release_year ?? 'Not documented'}</dd></div><div><dt>Official website</dt><dd>{record.official_url ? <a href={record.official_url}>Visit website <ExternalLink size={12}/></a> : 'Not documented'}</dd></div></dl></div></section><section id="audio" className="record-section"><div className="section-label">04 / Audio</div><div><h2>Audio demos</h2><div className="empty-state"><Music2 size={22}/><div><b>No audio demos have been added yet.</b><p>External official and community demos can be linked here without mirroring copyrighted audio.</p></div></div></div></section><section id="compatibility" className="record-section"><div className="section-label">05 / Compatibility</div><div><h2>Compatibility reports</h2><div className="empty-state"><Check size={22}/><div><b>No compatibility reports yet.</b><p>Help document how historical releases work on current and period-appropriate systems.</p></div></div></div></section><section id="comments" className="record-section"><div className="section-label">06 / Community</div><div><h2>Comments <span>0</span></h2><div className="empty-state"><MessageCircle size={22}/><div><b>No comments have been approved yet.</b><p>Community discussion will appear here when sign-in is enabled.</p></div></div></div></section><section id="sources" className="record-section"><div className="section-label">07 / References</div><div><h2>Sources</h2><div className="empty-state"><Flag size={22}/><div><b>Sources are being collected.</b><p>Each factual claim should be supported by an official page, manual, archived page, or other documented reference.</p></div></div></div></section></article><aside className="record-sidebar"><div><p className="eyebrow">At a glance</p><dl><dt>Initial release</dt><dd>{record.initial_release_year ?? '—'}</dd><dt>Discontinued</dt><dd>{record.discontinued_year ?? '—'}</dd><dt>Latest version</dt><dd>{versions[0]?.version_number ?? '—'}</dd><dt>Developer</dt><dd><a href={`/developer/${developer?.slug}`}>{developer?.name}</a></dd></dl></div></aside></div>
-    <footer className="record-footer"><a href="/"><ArrowLeft size={15}/> Back to the archive</a><span>Database-backed archive entry</span><a href="#suggest">Suggest an edit <ArrowRight size={15}/></a></footer>
-  </main>;
+  return (
+    <main className="record-page">
+      <header className="record-header">
+        <a className="wordmark" href="/">
+          <span className="mark">A</span>
+          <span>audioplugin.io</span>
+          <small>archive</small>
+        </a>
+        <nav>
+          <a href="/">Archive</a>
+          <a href={`/developer/${developer?.slug}`}>Developers</a>
+          <a href="/status/discontinued">Discontinued</a>
+        </nav>
+        <a className="record-contribute" href="#suggest">
+          <Pencil size={14} /> Suggest an edit
+        </a>
+      </header>
+      <div className="record-breadcrumb">
+        <a href="/">Archive</a>
+        <ArrowRight size={13} />
+        <a href={`/developer/${developer?.slug}`}>{developer?.name}</a>
+        <ArrowRight size={13} />
+        <span>{record.name}</span>
+      </div>
+      <section className="record-hero">
+        <div className="record-visual">
+          <div className="plugin-panel">
+            <span className="ni-mark">
+              {developer?.name
+                .split(' ')
+                .map((part) => part[0])
+                .join('')}
+            </span>
+            <span className="plugin-name">{record.name}</span>
+            <div className="plugin-lcd">
+              ARCHIVE&nbsp;&nbsp; {record.product_type ?? 'Audio software'}
+            </div>
+            <div className="knob-row">
+              {Array.from({ length: 8 }).map((_, i) => (
+                <i key={i} />
+              ))}
+            </div>
+            <div className="slider-row">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <i key={i} />
+              ))}
+            </div>
+            <small>{developer?.name} · archive record</small>
+          </div>
+          <p>
+            Screenshot not yet sourced · <a href="#suggest">contribute one</a>
+          </p>
+        </div>
+        <div className="record-title">
+          <div className="entry-kicker">
+            <span className={`status ${archived ? 'discontinued' : ''}`}>
+              {archived ? 'Discontinued' : 'Active'}
+            </span>
+            <span>
+              {record.initial_release_year ?? 'Year unknown'}
+              {record.discontinued_year ? `–${record.discontinued_year}` : ''}
+            </span>
+          </div>
+          <h1>{record.name}</h1>
+          <p className="developer-line">
+            by <a href={`/developer/${developer?.slug}`}>{developer?.name}</a>
+          </p>
+          <p className="record-lede">
+            {record.short_description ??
+              'A documented audio software product in the audioplugin.io archive.'}
+          </p>
+          <div className="signal-row">
+            <button>
+              <ThumbsUp size={16} /> I used this <b>0</b>
+            </button>
+            <button>
+              <Check size={16} /> I still use this <b>0</b>
+            </button>
+            <button>
+              <Heart size={16} /> Love it <b>0</b>
+            </button>
+          </div>
+          <div className="record-actions">
+            <button>
+              <Share2 size={15} /> Share
+            </button>
+            <a href="#sources">
+              <Flag size={15} /> Sources
+            </a>
+          </div>
+        </div>
+      </section>
+      <nav className="record-tabs" aria-label="Entry sections">
+        <a href="#overview">Overview</a>
+        <a href="#versions">Versions</a>
+        <a href="#specifications">Specifications</a>
+        <a href="#audio">Audio</a>
+        <a href="#compatibility">Compatibility</a>
+        <a href="#comments">Comments</a>
+        <a href="#sources">Sources</a>
+      </nav>
+      <div className="record-body">
+        <article>
+          <section id="overview" className="record-section">
+            <div className="section-label">01 / Overview</div>
+            <div>
+              <h2>Overview</h2>
+              <p>
+                {record.overview ??
+                  record.short_description ??
+                  'No overview has been added yet.'}
+              </p>
+            </div>
+          </section>
+          <section id="versions" className="record-section">
+            <div className="section-label">02 / Release history</div>
+            <div>
+              <h2>
+                Versions <span>{versions.length} documented</span>
+              </h2>
+              {versions.length ? (
+                <div className="version-table">
+                  {versions.map((version) => (
+                    <div className="version-row" key={version.id}>
+                      <b>{version.version_number}</b>
+                      <time>
+                        {version.release_date?.slice(0, 4) ?? 'Undated'}
+                      </time>
+                      <p>{version.notes ?? 'No release notes documented.'}</p>
+                      <small>{version.release_status}</small>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="empty-state">
+                  <Check size={22} />
+                  <div>
+                    <b>No versions have been added yet.</b>
+                    <p>
+                      Help improve this entry with a release number or date.
+                    </p>
+                  </div>
+                </div>
+              )}
+            </div>
+          </section>
+          <section id="specifications" className="record-section">
+            <div className="section-label">03 / Technical record</div>
+            <div>
+              <h2>Specifications</h2>
+              <dl className="spec-list">
+                <div>
+                  <dt>Product type</dt>
+                  <dd>{record.product_type ?? 'Not documented'}</dd>
+                </div>
+                <div>
+                  <dt>Categories</dt>
+                  <dd>{categories}</dd>
+                </div>
+                <div>
+                  <dt>Formats</dt>
+                  <dd>{formats}</dd>
+                </div>
+                <div>
+                  <dt>Initial release</dt>
+                  <dd>{record.initial_release_year ?? 'Not documented'}</dd>
+                </div>
+                <div>
+                  <dt>Official website</dt>
+                  <dd>
+                    {record.official_url ? (
+                      <a href={record.official_url}>
+                        Visit website <ExternalLink size={12} />
+                      </a>
+                    ) : (
+                      'Not documented'
+                    )}
+                  </dd>
+                </div>
+              </dl>
+            </div>
+          </section>
+          <section id="audio" className="record-section">
+            <div className="section-label">04 / Audio</div>
+            <div>
+              <h2>Audio demos</h2>
+              <div className="empty-state">
+                <Music2 size={22} />
+                <div>
+                  <b>No audio demos have been added yet.</b>
+                  <p>
+                    External official and community demos can be linked here
+                    without mirroring copyrighted audio.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </section>
+          <section id="compatibility" className="record-section">
+            <div className="section-label">05 / Compatibility</div>
+            <div>
+              <h2>Compatibility reports</h2>
+              <div className="empty-state">
+                <Check size={22} />
+                <div>
+                  <b>No compatibility reports yet.</b>
+                  <p>
+                    Help document how historical releases work on current and
+                    period-appropriate systems.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </section>
+          <section id="comments" className="record-section">
+            <div className="section-label">06 / Community</div>
+            <div>
+              <h2>
+                Comments <span>0</span>
+              </h2>
+              <div className="empty-state">
+                <MessageCircle size={22} />
+                <div>
+                  <b>No comments have been approved yet.</b>
+                  <p>
+                    Community discussion will appear here when sign-in is
+                    enabled.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </section>
+          <section id="sources" className="record-section">
+            <div className="section-label">07 / References</div>
+            <div>
+              <h2>
+                Sources <span>{sources.length} documented</span>
+              </h2>
+              {sources.length ? (
+                <ol className="source-list">
+                  {sources.map((source) => (
+                    <li key={source.id}>
+                      <a href={source.url} target="_blank" rel="noreferrer">
+                        {source.title} <ExternalLink size={12} />
+                      </a>
+                      <small>
+                        {[
+                          source.publisher,
+                          source.publication_date?.slice(0, 4),
+                          source.source_type.replaceAll('_', ' '),
+                        ]
+                          .filter(Boolean)
+                          .join(' · ')}
+                      </small>
+                      {source.notes && <p>{source.notes}</p>}
+                    </li>
+                  ))}
+                </ol>
+              ) : (
+                <div className="empty-state">
+                  <Flag size={22} />
+                  <div>
+                    <b>No sources have been documented yet.</b>
+                    <p>
+                      Help support this record with an official page, manual,
+                      archived page, or other reliable reference.
+                    </p>
+                  </div>
+                </div>
+              )}
+            </div>
+          </section>
+        </article>
+        <aside className="record-sidebar">
+          <div>
+            <p className="eyebrow">At a glance</p>
+            <dl>
+              <dt>Initial release</dt>
+              <dd>{record.initial_release_year ?? '—'}</dd>
+              <dt>Discontinued</dt>
+              <dd>{record.discontinued_year ?? '—'}</dd>
+              <dt>Latest version</dt>
+              <dd>{versions[0]?.version_number ?? '—'}</dd>
+              <dt>Sources</dt>
+              <dd>{sources.length || '—'}</dd>
+              <dt>Developer</dt>
+              <dd>
+                <a href={`/developer/${developer?.slug}`}>{developer?.name}</a>
+              </dd>
+            </dl>
+          </div>
+        </aside>
+      </div>
+      <footer className="record-footer">
+        <a href="/">
+          <ArrowLeft size={15} /> Back to the archive
+        </a>
+        <span>Database-backed archive entry</span>
+        <a href="#suggest">
+          Suggest an edit <ArrowRight size={15} />
+        </a>
+      </footer>
+    </main>
+  );
 }
