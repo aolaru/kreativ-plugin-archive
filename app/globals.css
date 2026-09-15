@@ -876,6 +876,35 @@ footer a {
 .record-visual > p a {
   border-bottom: 1px solid currentColor;
 }
+.record-screenshot {
+  margin: 0;
+}
+.record-screenshot img {
+  display: block;
+  width: 100%;
+  max-height: min(30vw, 410px);
+  object-fit: contain;
+  background: #202525;
+  border: 3px solid #121616;
+  box-shadow: 12px 12px 0 #26322d;
+}
+.record-screenshot figcaption {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 20px;
+  color: #59635d;
+  font-size: 12px;
+  line-height: 1.5;
+}
+.record-screenshot figcaption a {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 4px;
+  color: inherit;
+  border-bottom: 1px solid currentColor;
+}
 .plugin-panel {
   position: relative;
   height: min(25vw, 330px);

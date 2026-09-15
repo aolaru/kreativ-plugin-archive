@@ -40,6 +40,14 @@ export type ArchiveProduct = {
       notes: string | null;
     } | null;
   }>;
+  screenshots?: Array<{
+    id: string;
+    image_url: string;
+    caption: string | null;
+    source_url: string | null;
+    attribution: string | null;
+    sort_order: number;
+  }>;
 };
 
 function database() {
@@ -57,7 +65,7 @@ export async function getProduct(developerSlug: string, productSlug: string) {
   const { data } = await supabase
     .from('products')
     .select(
-      '*, developers!inner(name, slug, founded_year, country), product_versions(*), product_categories(categories(name, slug)), product_formats(formats(code, name)), product_sources(sources(id, title, url, publisher, publication_date, accessed_date, source_type, notes))',
+      '*, developers!inner(name, slug, founded_year, country), product_versions(*), product_categories(categories(name, slug)), product_formats(formats(code, name)), product_sources(sources(id, title, url, publisher, publication_date, accessed_date, source_type, notes)), screenshots(id, image_url, caption, source_url, attribution, sort_order)',
     )
     .eq('developers.slug', developerSlug)
     .eq('slug', productSlug)

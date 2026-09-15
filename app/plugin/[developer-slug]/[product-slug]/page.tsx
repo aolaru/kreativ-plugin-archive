@@ -63,6 +63,9 @@ export default async function ProductPage({
     .sort((a, b) =>
       (b.publication_date ?? '').localeCompare(a.publication_date ?? ''),
     );
+  const primaryScreenshot = [...(record.screenshots ?? [])].sort(
+    (a, b) => a.sort_order - b.sort_order,
+  )[0];
   const archived = record.status === 'discontinued';
   return (
     <main className="record-page">
@@ -90,32 +93,60 @@ export default async function ProductPage({
       </div>
       <section className="record-hero">
         <div className="record-visual">
-          <div className="plugin-panel">
-            <span className="ni-mark">
-              {developer?.name
-                .split(' ')
-                .map((part) => part[0])
-                .join('')}
-            </span>
-            <span className="plugin-name">{record.name}</span>
-            <div className="plugin-lcd">
-              ARCHIVE&nbsp;&nbsp; {record.product_type ?? 'Audio software'}
-            </div>
-            <div className="knob-row">
-              {Array.from({ length: 8 }).map((_, i) => (
-                <i key={i} />
-              ))}
-            </div>
-            <div className="slider-row">
-              {Array.from({ length: 6 }).map((_, i) => (
-                <i key={i} />
-              ))}
-            </div>
-            <small>{developer?.name} · archive record</small>
-          </div>
-          <p>
-            Screenshot not yet sourced · <a href="#suggest">contribute one</a>
-          </p>
+          {primaryScreenshot ? (
+            <figure className="record-screenshot">
+              <img
+                src={primaryScreenshot.image_url}
+                alt={primaryScreenshot.caption ?? `${record.name} interface`}
+              />
+              <figcaption>
+                <span>
+                  {primaryScreenshot.caption ?? `${record.name} interface`}
+                  {primaryScreenshot.attribution
+                    ? ` · ${primaryScreenshot.attribution}`
+                    : ''}
+                </span>
+                {primaryScreenshot.source_url && (
+                  <a
+                    href={primaryScreenshot.source_url}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    Source <ExternalLink size={12} />
+                  </a>
+                )}
+              </figcaption>
+            </figure>
+          ) : (
+            <>
+              <div className="plugin-panel">
+                <span className="ni-mark">
+                  {developer?.name
+                    .split(' ')
+                    .map((part) => part[0])
+                    .join('')}
+                </span>
+                <span className="plugin-name">{record.name}</span>
+                <div className="plugin-lcd">
+                  ARCHIVE&nbsp;&nbsp; {record.product_type ?? 'Audio software'}
+                </div>
+                <div className="knob-row">
+                  {Array.from({ length: 8 }).map((_, i) => (
+                    <i key={i} />
+                  ))}
+                </div>
+                <div className="slider-row">
+                  {Array.from({ length: 6 }).map((_, i) => (
+                    <i key={i} />
+                  ))}
+                </div>
+                <small>{developer?.name} · archive record</small>
+              </div>
+              <p>
+                Screenshot not yet sourced · <a href="#suggest">contribute one</a>
+              </p>
+            </>
+          )}
         </div>
         <div className="record-title">
           <div className="entry-kicker">
