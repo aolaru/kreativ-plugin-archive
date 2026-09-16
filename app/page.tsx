@@ -28,6 +28,7 @@ type Product = {
   latestVersionYear?: string;
   updatedAt: string;
   note: string;
+  screenshotUrl?: string;
 };
 
 type CatalogStats = {
@@ -101,34 +102,48 @@ function ProductArt({
 }) {
   return (
     <div
-      className={`product-art ${product.accent} ${large ? 'large-art' : ''}`}
+      className={`product-art ${product.accent} ${large ? 'large-art' : ''} ${product.screenshotUrl ? 'has-screenshot' : ''}`}
       role="img"
-      aria-label={`Abstract archive illustration for ${product.name}`}
+      aria-label={
+        product.screenshotUrl
+          ? `${product.name} interface screenshot`
+          : `Abstract archive illustration for ${product.name}`
+      }
     >
-      <div className="art-brand">
-        {product.developer
-          .split(' ')
-          .map((word) => word[0])
-          .join('')}
-      </div>
-      <div className="art-screen">
-        <span className="art-display">{product.name}</span>
-        <div className="art-grid">
-          <i />
-          <i />
-          <i />
-          <i />
-          <i />
-          <i />
-        </div>
-      </div>
-      <div className="art-controls">
-        <b />
-        <b />
-        <b />
-        <b />
-      </div>
-      <span className="art-label">ARCHIVE ILLUSTRATION</span>
+      {product.screenshotUrl ? (
+        <img
+          className="product-screenshot"
+          src={product.screenshotUrl}
+          alt=""
+        />
+      ) : (
+        <>
+          <div className="art-brand">
+            {product.developer
+              .split(' ')
+              .map((word) => word[0])
+              .join('')}
+          </div>
+          <div className="art-screen">
+            <span className="art-display">{product.name}</span>
+            <div className="art-grid">
+              <i />
+              <i />
+              <i />
+              <i />
+              <i />
+              <i />
+            </div>
+          </div>
+          <div className="art-controls">
+            <b />
+            <b />
+            <b />
+            <b />
+          </div>
+          <span className="art-label">ARCHIVE ILLUSTRATION</span>
+        </>
+      )}
     </div>
   );
 }
@@ -191,6 +206,9 @@ export default function Home() {
             .map((item: any) => item.formats?.code)
             .filter(Boolean)
             .join(' · ');
+          const screenshots = [...(product.screenshots ?? [])].sort(
+            (a: any, b: any) => (a.sort_order ?? 0) - (b.sort_order ?? 0),
+          );
           return {
             name: product.name,
             slug: product.slug,
@@ -211,6 +229,7 @@ export default function Home() {
             latestVersionYear: latestVersion?.release_date?.slice(0, 4),
             updatedAt: product.updated_at ?? '',
             note: relativeUpdate(product.updated_at ?? ''),
+            screenshotUrl: screenshots[0]?.image_url,
           } satisfies Product;
         });
         setProducts(mapped);

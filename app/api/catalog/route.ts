@@ -21,7 +21,7 @@ export async function GET() {
     supabase
       .from('products')
       .select(
-        'name, slug, product_type, status, initial_release_year, discontinued_year, short_description, overview, updated_at, developers(name, slug), product_versions(version_number, release_date), product_formats(formats(code, name))',
+        'name, slug, product_type, status, initial_release_year, discontinued_year, short_description, overview, updated_at, developers(name, slug), product_versions(version_number, release_date), product_formats(formats(code, name)), screenshots(image_url, sort_order)',
       )
       .order('updated_at', { ascending: false })
       .limit(200),
