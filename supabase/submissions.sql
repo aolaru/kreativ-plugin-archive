@@ -11,11 +11,16 @@ create table if not exists public.developer_submissions (
   description text,
   source_url text,
   status public.moderation_status not null default 'pending',
+  review_note text,
   created_at timestamptz not null default now(),
   reviewed_by uuid references public.profiles(id) on delete set null,
   reviewed_at timestamptz,
   check (initial_release_year is null or initial_release_year between 1950 and 2100)
 );
+
+-- Safe to run on an archive where the intake table already exists.
+alter table public.developer_submissions
+  add column if not exists review_note text;
 
 alter table public.developer_submissions enable row level security;
 drop policy if exists "anyone can submit plugins" on public.developer_submissions;

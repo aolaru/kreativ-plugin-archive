@@ -2248,6 +2248,32 @@ footer a {
   font: 400 24px var(--font-libre);
   letter-spacing: -0.05em;
 }
+.queue-tabs {
+  display: flex;
+  gap: 8px;
+  margin: 20px 0 4px;
+}
+.queue-tabs button {
+  border: 1px solid #62786d;
+  background: transparent;
+  color: #c9d5cb;
+  padding: 7px 9px;
+  font: 800 10px var(--font-manrope);
+  cursor: pointer;
+}
+.queue-tabs button.active {
+  color: #22352e;
+  border-color: #cde794;
+  background: #cde794;
+}
+.queue-notice {
+  margin: 18px 0 0;
+  padding: 10px 12px;
+  color: #dff0be;
+  background: #304b3c;
+  font-size: 12px;
+  line-height: 1.5;
+}
 .submission-queue article {
   padding: 20px 0;
   border-bottom: 1px solid #566961;
@@ -2278,6 +2304,47 @@ footer a {
   font-size: 11px;
   margin: 5px 0;
 }
+.queue-links {
+  display: grid;
+  gap: 5px;
+}
+.queue-links a {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  width: max-content;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #dbeeb0;
+  font-size: 11px;
+}
+.queue-note {
+  display: grid;
+  gap: 7px;
+  margin-top: 17px;
+  color: #e7eee0;
+  font: 800 10px var(--font-manrope);
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+.queue-note span {
+  color: #bdcbc0;
+  font-size: 9px;
+}
+.queue-note textarea {
+  resize: vertical;
+  min-height: 70px;
+  border: 1px solid #62786d;
+  background: #1e2e29;
+  color: #edf3e4;
+  padding: 10px;
+  font: 400 12px/1.5 var(--font-manrope);
+}
+.queue-note textarea:focus {
+  outline: 2px solid #cde794;
+  outline-offset: 2px;
+}
 .queue-actions {
   display: flex;
   gap: 8px;
@@ -2302,6 +2369,35 @@ footer a {
 .queue-actions button:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+}
+.review-outcome {
+  margin-top: 17px;
+  padding: 11px 12px;
+  border-left: 3px solid #a9ce73;
+  background: #304b3c;
+}
+.review-outcome.rejected {
+  border-left-color: #d98572;
+  background: #51352f;
+}
+.review-outcome b,
+.review-outcome p,
+.review-outcome span {
+  display: block;
+}
+.review-outcome b {
+  color: #edf3e4;
+  font-size: 11px;
+}
+.review-outcome p {
+  margin: 7px 0;
+  color: #dbe5da;
+  font-size: 12px;
+  line-height: 1.5;
+}
+.review-outcome span {
+  color: #bdcbc0;
+  font-size: 10px;
 }
 .queue-empty,
 .queue-error {
