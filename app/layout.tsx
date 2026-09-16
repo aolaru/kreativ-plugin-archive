@@ -7,9 +7,15 @@ const libre = Libre_Baskerville({ variable: '--font-libre', subsets: ['latin'], 
 const mono = DM_Mono({ variable: '--font-mono', subsets: ['latin'], weight: ['400', '500'] });
 
 export const metadata: Metadata = {
-  title: 'audioplugin.io — Audio Plugin Archive',
+  metadataBase: new URL('https://audioplugin.io'),
+  title: {
+    default: 'audioplugin.io — Audio Plugin Archive',
+    template: '%s | audioplugin.io',
+  },
   description: 'A community-maintained historical archive of audio plugins, virtual instruments, effects, and music software.',
   applicationName: 'audioplugin.io',
+  alternates: { canonical: '/' },
+  robots: { index: true, follow: true },
   icons: { icon: '/favicon.svg' },
 };
 

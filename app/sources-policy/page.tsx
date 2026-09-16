@@ -1,0 +1,12 @@
+import type { Metadata } from 'next';
+import { ArrowRight, ExternalLink } from 'lucide-react';
+
+export const metadata: Metadata = {
+  title: 'Sources policy',
+  description: 'The sourcing and image-attribution standards used by audioplugin.io.',
+  alternates: { canonical: '/sources-policy' },
+};
+
+export default function SourcesPolicyPage() {
+  return <main className="policy-page"><header className="record-header"><a className="wordmark" href="/"><span className="mark">A</span><span>audioplugin.io</span><small>archive</small></a><nav><a href="/">Archive</a><a href="/editorial-guidelines">Guidelines</a><a href="/submit">Submit a plugin</a></nav></header><section className="policy-hero"><p className="eyebrow">Evidence and attribution</p><h1>Every useful record<br/><em>shows its work.</em></h1><p>Sources let readers trace a fact back to the material that supports it—and help improve the archive when better evidence appears.</p></section><section className="policy-content"><article><section><h2>Source hierarchy</h2><p>We prioritize sources closest to a product’s release and development:</p><ol><li>Official product pages, manuals, release notes, and dated announcements.</li><li>Archived official pages when a product is no longer maintained.</li><li>Reliable contemporary reporting, reviews, and specialist historical archives.</li></ol></section><section><h2>Images and screenshots</h2><p>Interface images are displayed with a source link and attribution. We use official product images when available; for discontinued software, we may use an identified archival source. Copyright remains with the respective rights holder. If you own an image and want its use corrected or removed, submit a note with the relevant details.</p></section><section><h2>Uncertainty is information</h2><p>Where a precise date, format, or feature cannot be verified, we avoid inventing it. Records may use a year rather than a full date, describe a source as archival, or mark a field as not yet documented.</p></section></article><aside><p className="eyebrow">On every entry</p><h2>Follow the evidence.</h2><p>Look for the Sources section in each product record to review the material behind its facts.</p><a className="entry-link" href="/editorial-guidelines">Editorial guidelines <ArrowRight size={15}/></a><a className="entry-link" href="/submit">Submit a source <ExternalLink size={15}/></a></aside></section></main>;
+}

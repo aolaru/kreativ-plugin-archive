@@ -937,6 +937,27 @@ footer a {
 .record-breadcrumb a:hover {
   color: var(--orange);
 }
+.policy-page { min-height: 100vh; background: #faf9f4; color: var(--ink); }
+.policy-hero { display: grid; grid-template-columns: minmax(0, 1fr) minmax(240px, .55fr); gap: 9vw; padding: clamp(62px, 10vw, 136px) 5.3vw clamp(56px, 8vw, 102px); border-bottom: 1px solid var(--line); }
+.policy-hero h1 { margin: 12px 0 0; font: 400 clamp(48px, 7vw, 94px)/.91 var(--font-libre); letter-spacing: -.075em; }
+.policy-hero > p:last-child { align-self: end; max-width: 360px; margin: 0 0 8px; color: #596661; font-size: 16px; line-height: 1.7; }
+.policy-content { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(250px, .65fr); gap: clamp(46px, 8vw, 130px); padding: clamp(52px, 8vw, 104px) 5.3vw; }
+.policy-content article { display: grid; gap: 52px; }
+.policy-content article section { padding-bottom: 52px; border-bottom: 1px solid var(--line); }
+.policy-content article section:last-child { padding-bottom: 0; border-bottom: 0; }
+.policy-content h2 { margin: 0 0 15px; font: 400 clamp(27px, 3vw, 39px)/1.05 var(--font-libre); letter-spacing: -.055em; }
+.policy-content article p,
+.policy-content li { color: #53615d; font-size: 16px; line-height: 1.75; }
+.policy-content ul,
+.policy-content ol { display: grid; gap: 14px; margin: 24px 0 0; padding: 0; list-style-position: inside; }
+.policy-content ul { list-style: none; }
+.policy-content li svg { margin-right: 9px; color: #65813a; vertical-align: -3px; }
+.policy-content aside { align-self: start; padding: 34px; background: #243f38; color: #eef1e4; }
+.policy-content aside > svg { margin-bottom: 22px; color: #c8e964; }
+.policy-content aside .eyebrow { color: #c8e964; }
+.policy-content aside h2 { margin-top: 9px; color: #fffdf4; }
+.policy-content aside > p:not(.eyebrow) { color: #ced8cf; font-size: 14px; line-height: 1.7; }
+.policy-content aside .entry-link { display: flex; width: fit-content; margin-top: 23px; color: #e9f6c1; }
 .record-hero {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -2487,4 +2508,15 @@ footer a {
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+@media (max-width: 800px) {
+  .policy-hero,
+  .policy-content {
+    grid-template-columns: 1fr;
+    gap: 36px;
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+  .policy-hero > p:last-child { margin: 0; }
 }

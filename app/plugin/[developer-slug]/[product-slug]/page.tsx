@@ -11,9 +11,34 @@ import {
   Share2,
   ThumbsUp,
 } from 'lucide-react';
+import type { Metadata } from 'next';
 import { getProduct } from '@/lib/archive';
 
 export const dynamic = 'force-dynamic';
+
+const siteUrl = 'https://audioplugin.io';
+
+export async function generateMetadata({
+  params,
+}: {
+  params: { 'developer-slug': string; 'product-slug': string };
+}): Promise<Metadata> {
+  const record = await getProduct(
+    params['developer-slug'],
+    params['product-slug'],
+  );
+  if (!record) return { title: 'Entry not found', robots: { index: false } };
+  const developer = record.developers?.name ?? 'Unknown developer';
+  return {
+    title: `${record.name} by ${developer}`,
+    description:
+      record.short_description ??
+      `${record.name} is a documented audio software record in the audioplugin.io archive.`,
+    alternates: {
+      canonical: `/plugin/${params['developer-slug']}/${params['product-slug']}`,
+    },
+  };
+}
 
 export default async function ProductPage({
   params,
@@ -67,8 +92,24 @@ export default async function ProductPage({
     (a, b) => a.sort_order - b.sort_order,
   )[0];
   const archived = record.status === 'discontinued';
+  const softwareSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareApplication',
+    name: record.name,
+    applicationCategory: record.product_type ?? 'Audio software',
+    url: `${siteUrl}/plugin/${params['developer-slug']}/${params['product-slug']}`,
+    creator: developer?.name ? { '@type': 'Organization', name: developer.name } : undefined,
+    datePublished: record.initial_release_year
+      ? `${record.initial_release_year}-01-01`
+      : undefined,
+    description: record.short_description ?? record.overview ?? undefined,
+  };
   return (
     <main className="record-page">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareSchema) }}
+      />
       <header className="record-header">
         <a className="wordmark" href="/">
           <span className="mark">A</span>

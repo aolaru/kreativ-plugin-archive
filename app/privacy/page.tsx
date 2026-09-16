@@ -1,0 +1,12 @@
+import type { Metadata } from 'next';
+import { ArrowRight, ShieldCheck } from 'lucide-react';
+
+export const metadata: Metadata = {
+  title: 'Privacy',
+  description: 'A plain-language explanation of the information audioplugin.io handles and why.',
+  alternates: { canonical: '/privacy' },
+};
+
+export default function PrivacyPage() {
+  return <main className="policy-page"><header className="record-header"><a className="wordmark" href="/"><span className="mark">A</span><span>audioplugin.io</span><small>archive</small></a><nav><a href="/">Archive</a><a href="/sources-policy">Sources policy</a><a href="/submit">Submit a plugin</a></nav></header><section className="policy-hero"><p className="eyebrow">Plain-language privacy</p><h1>Only what helps<br/><em>keep the archive running.</em></h1><p>We keep the data needed to maintain archive accounts, review plugin submissions, and operate the site. We do not sell personal information.</p></section><section className="policy-content"><article><section><h2>Information you provide</h2><p>If you create an editor account, the sign-in service handles your email address and password. If you submit a plugin, we receive the contact information and product details you choose to send so the submission can be reviewed.</p></section><section><h2>How it is used</h2><p>Account information is used to control editorial access. Submission information is used to review a proposed listing or contact the submitter about the record. It is not used for advertising or sold to third parties.</p></section><section><h2>Technical services</h2><p>audioplugin.io uses hosted services to deliver the site and manage accounts and archive data. Those providers may process standard technical information required to operate their services. Linked source pages and externally hosted screenshots are governed by their own sites’ privacy practices.</p></section><section><h2>Your choices</h2><p>Do not submit information you do not want us to review. To correct a public archive record, use the submission form and include the relevant source material.</p></section></article><aside><ShieldCheck size={22}/><p className="eyebrow">Privacy principle</p><h2>No data brokerage.</h2><p>The archive is built for research and preservation, not advertising profiles.</p><a className="entry-link" href="/submit">Contact the archive <ArrowRight size={15}/></a></aside></section></main>;
+}

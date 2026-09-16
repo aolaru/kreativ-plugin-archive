@@ -314,9 +314,18 @@ export default function Home() {
     [products],
   );
   const number = new Intl.NumberFormat('en');
+  const websiteSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: 'audioplugin.io',
+    url: 'https://audioplugin.io',
+    description:
+      'A community-maintained historical archive of audio software, instruments, effects, and music production tools.',
+  };
 
   return (
     <main>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }} />
       <header className="site-header">
         <a className="wordmark" href="/">
           <span className="mark">A</span>
@@ -697,9 +706,9 @@ export default function Home() {
         <p>A community-driven encyclopedia for audio software history.</p>
         <div>
           <a href="#about">About</a>
-          <a href="#guidelines">Editorial guidelines</a>
-          <a href="#sources">Sources policy</a>
-          <a href="#privacy">Privacy</a>
+          <a href="/editorial-guidelines">Editorial guidelines</a>
+          <a href="/sources-policy">Sources policy</a>
+          <a href="/privacy">Privacy</a>
         </div>
       </footer>
     </main>
