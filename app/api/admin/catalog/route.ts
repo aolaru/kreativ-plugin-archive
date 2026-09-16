@@ -6,7 +6,7 @@ export async function GET(request: Request) {
 
   const [{ data: developers, error: developerError }, { data: products, error: productError }] = await Promise.all([
     auth.supabase.from('developers').select('id, name, slug').order('name'),
-    auth.supabase.from('products').select('id, name, slug, status, initial_release_year, developers(name, slug)').order('updated_at', { ascending: false }).limit(12),
+    auth.supabase.from('products').select('id, name, slug, status, initial_release_year, developers(name, slug)').order('name').limit(200),
   ]);
 
   if (developerError || productError) return Response.json({ error: 'The editor catalog could not be loaded.' }, { status: 500 });

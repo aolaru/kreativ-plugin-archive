@@ -181,6 +181,13 @@ export default function Home() {
   const [products, setProducts] = useState<Product[]>([]);
   const [stats, setStats] = useState<CatalogStats | null>(null);
   const [categories, setCategories] = useState<CatalogCategory[]>([]);
+  const [browseFilters, setBrowseFilters] = useState({
+    developer: '',
+    type: '',
+    format: '',
+    status: '',
+    decade: '',
+  });
   const [catalogStatus, setCatalogStatus] = useState<
     'loading' | 'ready' | 'error'
   >('loading');
@@ -264,6 +271,47 @@ export default function Home() {
           .includes(query.trim().toLowerCase()),
       ),
     [query, products],
+  );
+  const browseProducts = useMemo(
+    () =>
+      products.filter((product) => {
+        const year = Number(product.year);
+        return (
+          (!browseFilters.developer ||
+            product.developer === browseFilters.developer) &&
+          (!browseFilters.type || product.productType === browseFilters.type) &&
+          (!browseFilters.format ||
+            product.formats.split(' · ').includes(browseFilters.format)) &&
+          (!browseFilters.status || product.status === browseFilters.status) &&
+          (!browseFilters.decade ||
+            (Number.isFinite(year) &&
+              year >= Number(browseFilters.decade) &&
+              year < Number(browseFilters.decade) + 10))
+        );
+      }),
+    [browseFilters, products],
+  );
+  const browseOptions = useMemo(
+    () => ({
+      developers: [...new Set(products.map((product) => product.developer))].sort(),
+      types: [...new Set(products.map((product) => product.productType))].sort(),
+      formats: [
+        ...new Set(
+          products.flatMap((product) =>
+            product.formats === 'Not documented'
+              ? []
+              : product.formats.split(' · '),
+          ),
+        ),
+      ].sort(),
+      decades: [...new Set(
+        products
+          .map((product) => Number(product.year))
+          .filter(Number.isFinite)
+          .map((year) => Math.floor(year / 10) * 10),
+      )].sort((a, b) => a - b),
+    }),
+    [products],
   );
   const number = new Intl.NumberFormat('en');
 
@@ -537,6 +585,30 @@ export default function Home() {
               })}
             </div>
           ))}
+        </div>
+        <div className="archive-browser" aria-label="Filter archive entries">
+          <div className="browser-heading">
+            <div>
+              <p className="eyebrow">Full catalog</p>
+              <h3>Find a specific release</h3>
+            </div>
+            <span>{browseProducts.length} matching entries</span>
+          </div>
+          <div className="browser-filters">
+            <label>Developer<select value={browseFilters.developer} onChange={(event) => setBrowseFilters({ ...browseFilters, developer: event.target.value })}><option value="">All developers</option>{browseOptions.developers.map((value) => <option key={value}>{value}</option>)}</select></label>
+            <label>Type<select value={browseFilters.type} onChange={(event) => setBrowseFilters({ ...browseFilters, type: event.target.value })}><option value="">All types</option>{browseOptions.types.map((value) => <option key={value}>{value}</option>)}</select></label>
+            <label>Format<select value={browseFilters.format} onChange={(event) => setBrowseFilters({ ...browseFilters, format: event.target.value })}><option value="">All formats</option>{browseOptions.formats.map((value) => <option key={value}>{value}</option>)}</select></label>
+            <label>Status<select value={browseFilters.status} onChange={(event) => setBrowseFilters({ ...browseFilters, status: event.target.value })}><option value="">All statuses</option><option value="Active">Current</option><option value="Discontinued">Archived</option></select></label>
+            <label>Decade<select value={browseFilters.decade} onChange={(event) => setBrowseFilters({ ...browseFilters, decade: event.target.value })}><option value="">All decades</option>{browseOptions.decades.map((value) => <option key={value} value={value}>{value}s</option>)}</select></label>
+            <button type="button" onClick={() => setBrowseFilters({ developer: '', type: '', format: '', status: '', decade: '' })}>Clear filters</button>
+          </div>
+          <div className="browser-results">
+            {browseProducts.length ? browseProducts.map((product) => (
+              <a key={`browse-${product.developerSlug}-${product.slug}`} href={`/plugin/${product.developerSlug}/${product.slug}`}>
+                <span>{product.year}</span><b>{product.name}</b><span>{product.developer}</span><small>{product.productType} · {product.formats}</small><ArrowRight size={15}/>
+              </a>
+            )) : <p className="empty-state">No entries match those filters yet.</p>}
+          </div>
         </div>
       </section>
 
